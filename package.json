@@ -1,0 +1,16 @@
+{
+  "name": "hono-bun-react",
+  "module": "index.ts",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently --kill-others --names \"api,web\" \"cd packages/api && bun run dev\" \"cd packages/web && bun run dev\"",
+    "build": "cd packages/web && bun run build",
+    "start": "cd packages/api && bun run start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
