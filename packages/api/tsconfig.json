@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "module": "Node16",
+    "module": "ESNext",
     "esModuleInterop": true,
     "strict": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx"
+    "jsx": "react-jsx"
   }
 }

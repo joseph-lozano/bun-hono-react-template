@@ -1,31 +1,28 @@
-import { Hono } from "hono";
-import { serveStatic } from "hono/bun";
+import { getIndex, publicDir } from "./html.js";
+import path from "path";
+const server = Bun.serve({
+  port: 3000,
+  async fetch(request) {
+    const url = new URL(request.url);
 
-const app = new Hono();
+    if (url.pathname.startsWith("/assets")) {
+      return new Response(Bun.file(path.join(publicDir(), url.pathname)), {
+        headers: {
+          // these files are hashed so we can cache them forever
+          "Cache-Control": "public, max-age=31536000, immutable",
+        },
+      });
+    }
 
-app.get("/api/ping", async (c) => {
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-  return c.text("pong");
+    const publicFile = Bun.file(path.join(publicDir(), url.pathname));
+    if (await publicFile.exists()) {
+      return new Response(publicFile);
+    }
+
+    if (url.pathname === "/api/ping") return new Response("pong");
+    const indexFile = await getIndex();
+    return new Response(Bun.file(indexFile));
+  },
 });
 
-app.use("*", serveStatic({ root: "../web/dist" }));
-
-if (Bun.env.NODE_ENV === "development") {
-  app.get("/*", serveStatic({ path: "./static/index.dev.html" }));
-} else {
-  const manifestFile = Bun.file("../web/dist/.vite/manifest.json");
-  const template = Bun.file("./static/index.template.html");
-  const manifest = JSON.parse(await manifestFile.text());
-  const [jsFile, cssFile] = [
-    manifest["src/main.tsx"].file,
-    manifest["src/main.tsx"]["css"][0],
-  ];
-  const indexHTML = (await template.text())
-    .replace("{{MAIN.JS}}", jsFile)
-    .replace("{{INDEX.CSS}}", cssFile);
-  Bun.write("./static/index.html", indexHTML);
-
-  app.get("/*", serveStatic({ path: "./static/index.html" }));
-}
-
-export default app;
+console.log(`Listening on http://localhost:${server.port}`);

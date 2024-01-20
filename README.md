@@ -1,6 +1,6 @@
-# Bun/Hono Starter Template
+# Bun/React Starter Template
 
-This is a template for getting up and running with a client side [React](https://react.dev) app powered by [Hono](https://hono.dev) and [Bun](https://bun.sh).
+This is a template for getting up and running with a client side [React](https://react.dev) app powered by [Bun](https://bun.sh).
 
 ## Get Started
 

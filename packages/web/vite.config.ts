@@ -8,7 +8,10 @@ export default defineConfig({
     manifest: true,
     rollupOptions: {
       input: "src/main.tsx",
+      
+      output: {dir: "../../build/web",}
     },
+    emptyOutDir: true,
   },
   server: {
     origin: "http://localhost:5173",
